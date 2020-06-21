@@ -126,46 +126,33 @@ class Single_Default_Post_Grid extends Widget_Base { #add ClassName
         }
 
         $sq = new \WP_Query($args);
+        $x = 0;
 
         if ($sq->have_posts()) : while ($sq->have_posts()) : $sq->the_post();
         ?>
 
+        <?php if(! $x >= 1) { ?>
 
     <div class="grid-container">
 
     <div class="grid-50">
     <?php if(has_post_thumbnail()):; ?> 
-    <img class="bd-placeholder-img" width="420px" height="auto" src=<?php the_post_thumbnail_url(''); ?> />
+    <img class="" width="420px" height="auto" src=<?php the_post_thumbnail_url(''); ?> />
     <?php endif ?>
     </div>
+
     <div class="50">
-    <strong class="d-inline-block mb-2 sq sq-tagline"><?php echo $settings['tagline'] ?></strong>
-    <h3 class="mb-2 sq"><?php the_title() ?></h3>
-    <p class="mb-2 sq"><?php the_content() ?></p>
-    <a href="#" class="btn btn-outline-primary sq-btn"><?php $settings['button_text'] ?></a>
+    <h3 class=""><?php echo $settings['tagline'] ?></h3>
+    <strong class=""><?php the_title() ?></strong>
+    <p class=""><?php the_content() ?></p>
+    <button type="button"><?php echo $settings['button_text'] ?></button>
     </div>
+
     </div>
-
-
-
+        <?php $x = $x + 1; } ?>
     <?php endwhile; endif; wp_reset_postdata(); wp_reset_query(); ?>
+    
 
-    <?php
-                if ( \Elementor\Plugin::instance()->editor->is_edit_mode() ) {
-                    $this->render_editor_script();
-                }
-            
-            
-            ?>
-
-<?php
-    }
-
-
-
-    protected function render_editor_script() { ?>
-
-      
 <?php
     }
 	
