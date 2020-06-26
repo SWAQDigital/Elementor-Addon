@@ -57,7 +57,8 @@ class Plugin {
        
         
         //Elementor Widgets
-		require_once( __DIR__ . '/widgets/single_default_post_grid.php' );
+		require_once( __DIR__ . '/widgets/landscape_post_grid.php' );
+		require_once( __DIR__ . '/widgets/portriat_post_grid.php' );
 
 	}
 
@@ -74,7 +75,8 @@ class Plugin {
 		$this->include_widgets_files();
 
 		// Register Widgets
-		\Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Widgets\Single_Default_Post_Grid() );
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Widgets\Landscape_Post_Grid() );
+		\Elementor\Plugin::instance()->widgets_manager->register_widget_type( new Widgets\Portriat_Post_Grid() );
 	}
 
 	/**

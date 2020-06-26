@@ -14,23 +14,19 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
  * @since 1.0.0
  */
 
-class Single_Default_Post_Grid extends Widget_Base { #add ClassName
+class Landscape_Post_Grid extends Widget_Base { #add ClassName
 
     public function get_name() {
-        return 'Single_Default_Post_Grid';
+        return 'Landscape_Post_Grid';
     }
 
     public function get_title() {
-        return __( 'SWAQ Default Post Grid', 'elementor' );
+        return __( 'Landscape Post Grid', 'elementor' );
     }
 
     public function get_icon() {
         return 'fa fa-font';
-    }
-
-    public function get_categories() {
-        return 'SWAQ Elementor Addon';
-    }
+    }   
 
     protected function _register_controls() {
         $this->start_controls_section(
@@ -65,19 +61,61 @@ class Single_Default_Post_Grid extends Widget_Base { #add ClassName
                 'label' => __( 'Number of Posts', 'swaq' ),
                 'type' => \Elementor\Controls_Manager::NUMBER,
                 'min' => 1,
-                'max' => 2,
-                'step' => 5,
+                'max' => 30,
                 'default' => 1,
             ]
         );
 
         $this->add_control(
-            'post_categories',
+            'post_category',
             [
-                'label' => __( 'Post Categoreis', 'swaq' ),
-                'type' => \Elementor\Controls_Manager::SELECT2,
-                'multiple' => false,
-                'options' => $this->get_categories(),
+                'label' => __( 'Post Category', 'swaq' ),
+                'type' => \Elementor\Controls_Manager::TEXT,
+                'placeholder' => __( 'Type your category slug here', 'swaq' ),
+            ]
+        );
+
+        $this->add_control(
+            'flip',
+            [
+                'label' => __( 'Flip Position', 'swaq' ),
+                'type' => \Elementor\Controls_Manager::SWITCHER,
+                'show_lable' => true,
+                'default' => 'No',
+            ]
+        );
+
+        $this->add_control(
+            'show_post_title',
+            [
+                'label' => __( 'Show Post Title', 'swaq' ),
+                'type' => \Elementor\Controls_Manager::SWITCHER,
+                'show_lable' => true,
+            ]
+        );
+        $this->add_control(
+            'show_post_description',
+            [
+                'label' => __( 'Show Post Description', 'swaq' ),
+                'type' => \Elementor\Controls_Manager::SWITCHER,
+                'show_lable' => true,
+            ]
+        );
+        $this->add_control(
+            'show_post_button',
+            [
+                'label' => __( 'Show Post Button', 'swaq' ),
+                'type' => \Elementor\Controls_Manager::SWITCHER,
+                'show_lable' => true,
+            ]
+        );
+
+        $this->add_control(
+            'show_date',
+            [
+                'label' => __( 'Show Post Date', 'swaq' ),
+                'type' => \Elementor\Controls_Manager::SWITCHER,
+                'show_lable' => true,
             ]
         );
 
@@ -112,18 +150,8 @@ class Single_Default_Post_Grid extends Widget_Base { #add ClassName
 
         <?php
 
-        $args = array('post_type'=>'post', 'post_per_page'=>2);
+        $args = array('post_type'=>'post', 'post_per_page'=>$settings['posts_per_page'], 'category_name'=>$settings['post_category']);
 
-        if(!empty($settings['post_categories'])) {
-            $args['tax_query'] = 
-            array(
-                array(
-                    'taxonomy' => 'post_categories',
-                    'field' => 'term_id',
-                    'terms' => $settings['post_categories'],
-                )
-                );
-        }
 
         $sq = new \WP_Query($args);
         $x = 0;
@@ -131,21 +159,22 @@ class Single_Default_Post_Grid extends Widget_Base { #add ClassName
         if ($sq->have_posts()) : while ($sq->have_posts()) : $sq->the_post();
         ?>
 
-        <?php if(! $x >= 1) { ?>
+        <?php if( $x < $settings['posts_per_page']) { ?>
 
     <div class="grid-container">
 
-    <div class="grid-50">
+    <div class="grid-50 <?php if ($settings['flip']) { ?> push-50 <?php } ?>">
     <?php if(has_post_thumbnail()):; ?> 
     <img class="" width="420px" height="auto" src=<?php the_post_thumbnail_url(''); ?> />
     <?php endif ?>
     </div>
 
-    <div class="50">
+    <div class="grid-50 <?php if ($settings['flip']) { ?> pull-50 <?php } ?>">
     <h3 class=""><?php echo $settings['tagline'] ?></h3>
-    <strong class=""><?php the_title() ?></strong>
-    <p class=""><?php the_content() ?></p>
-    <button type="button"><?php echo $settings['button_text'] ?></button>
+    <?php if ($settings['show_post_title']) { ?> <h1><strong class=""><a href="<?php the_permalink(); ?>"><?php the_title() ?></a></strong></h1> <?php } ?>
+    <?php if ($settings['show_post_description']) { ?> <p class=""><?php the_excerpt() ?></p> <?php } ?>
+    <?php if ($settings['show_date']) { ?><h3 class=""><?php the_date() ?></h3><?php } ?>
+    <div><?php if ($settings['show_post_button']) { ?><a href="<?php the_permalink(); ?>"> <button type="button"><?php echo $settings['button_text'] ?></button></a> <?php } ?></div>
     </div>
 
     </div>
